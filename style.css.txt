@@ -1,0 +1,73 @@
+/* 기본 스타일 */
+body {
+    font-family: 'Pretendard', sans-serif; /* 예쁜 폰트 (없으면 기본 폰트) */
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* 메뉴 아이템들을 담을 컨테이너 */
+#vending-machine-container {
+    display: grid;
+    /* 화면 크기에 따라 250px 크기의 카드가 자동으로 정렬됩니다. */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 개별 메뉴 카드 스타일 */
+.item-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.2s;
+    position: relative; /* 품절 표시를 위한 기준점 */
+    overflow: hidden; /* 품절 리본이 튀어나가지 않게 */
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+
+.item-card img {
+    max-width: 80%;
+    height: 150px;
+    object-fit: contain; /* 이미지가 찌그러지지 않게 */
+}
+
+.item-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.item-price {
+    font-size: 1em;
+    color: #555;
+}
+
+/* 품절(sold-out) 스타일 */
+.item-card.sold-out {
+    opacity: 0.5; /* 카드를 반투명하게 */
+}
+
+/* 품절 리본 */
+.item-card.sold-out::after {
+    content: '품절';
+    position: absolute;
+    top: 15px;
+    right: -30px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 40px;
+    transform: rotate(45deg);
+    font-weight: bold;
+}

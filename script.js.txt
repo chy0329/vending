@@ -1,0 +1,54 @@
+// 1단계에서 복사한 Google Sheets CSV 파일 URL을 여기에 붙여넣으세요.
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1dfCAHDmNFbSlcAk99lVoYlRNcifONJroUJf-fSWWP6Y/edit?gid=0#gid=0';
+
+// HTML에서 메뉴 카드를 넣을 컨테이너 요소를 가져옵니다.
+const container = document.getElementById('vending-machine-container');
+
+// 웹페이지가 로드되면 실행될 메인 함수
+async function loadVendingMachineItems() {
+    try {
+        // fetch API를 사용해 Google Sheets 데이터를 가져옵니다.
+        const response = await fetch(GOOGLE_SHEET_URL);
+        const data = await response.text(); // CSV 데이터를 텍스트 형태로 받습니다.
+
+        // CSV 데이터를 줄바꿈(\n)으로 나누어 각 줄(row)을 배열로 만듭니다.
+        // slice(1)을 사용해 제목 행(name, price 등)은 제외합니다.
+        const rows = data.split('\n').slice(1);
+
+        // 각 줄(메뉴 정보)을 순회하며 HTML 카드를 생성합니다.
+        rows.forEach(rowText => {
+            // 빈 줄은 건너뜁니다.
+            if (!rowText) return;
+
+            // 쉼표(,)로 데이터를 분리해 이름, 가격 등으로 나눕니다.
+            const [name, price, stock, imageUrl] = rowText.split(',');
+
+            // 카드 HTML 요소를 만듭니다.
+            const card = document.createElement('div');
+            card.className = 'item-card'; // CSS 클래스 적용
+
+            // 재고가 0이면 'sold-out' 클래스를 추가합니다.
+            if (parseInt(stock) === 0) {
+                card.classList.add('sold-out');
+            }
+            
+            // 카드의 내부 HTML을 채웁니다.
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="${name}">
+                <div class="item-name">${name}</div>
+                <div class="item-price">${Number(price).toLocaleString()}원</div>
+            `;
+            
+            // 완성된 카드를 컨테이너에 추가합니다.
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        // 데이터를 불러오는 데 실패하면 에러 메시지를 표시합니다.
+        console.error('데이터 로딩 실패:', error);
+        container.innerHTML = '<p>데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.</p>';
+    }
+}
+
+// 함수 실행!
+loadVendingMachineItems();
